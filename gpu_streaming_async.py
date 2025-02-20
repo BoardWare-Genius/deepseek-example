@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import torch
@@ -5,8 +6,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # 检查是否有可用的 GPU
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Using device: {device}")
-
 # 替换为你的本地模型路径
 model_path = "./models/deepseek-model-8b"
 
@@ -16,12 +15,10 @@ model = AutoModelForCausalLM.from_pretrained(
     model_path).to(device)  # 将模型移动到 GPU
 
 
-def generate_streaming_text(prompt, max_length=100):
+def generate_streaming_yield(prompt, max_length=100):
     inputs = tokenizer(prompt, return_tensors="pt").to(device)  # 将输入数据移动到 GPU
     input_ids = inputs["input_ids"]
 
-    # 初始化生成的文本
-    generated_text = prompt
     with torch.no_grad():
         for _ in range(max_length):
             # print(time.time())
@@ -40,20 +37,30 @@ def generate_streaming_text(prompt, max_length=100):
             next_token = tokenizer.decode(
                 next_token_id[0], skip_special_tokens=True)
 
-            # 输出生成的词
-            print(next_token, end="", flush=True)
-
             # 更新生成的文本
-            generated_text += next_token
+            yield next_token
 
             # 如果生成结束符，则停止生成
             if next_token_id == tokenizer.eos_token_id:
                 break
 
-    return generated_text
 
+async def generate_streaming_text(prompt, max_length=100):
+    generated_text = prompt
+    gen = generate_streaming_yield(prompt, max_length)
+    for _ in range(max_length):
+        text = next(gen)
+        if text == tokenizer.eos_token_id:
+            break
+        print(text, end="", flush=True)
+        generated_text += text
+        await asyncio.sleep(0)
+
+
+async def main():
+    await asyncio.gather(generate_streaming_text("你是誰"), generate_streaming_text("who are you?"))
 
 # 示例调用
 prompt = "who are you?"
-generated_text = generate_streaming_text(prompt)
+asyncio.run(main())
 print()
