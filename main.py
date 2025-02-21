@@ -1,29 +1,39 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import asyncio
+import json
+from typing import Union
 
-# 指定本地路径
-model_path = "./models/deepseek-model-8b"
+import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+from openai import OpenAI
+from pydantic import BaseModel
 
-# 从本地加载模型和分词器
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForCausalLM.from_pretrained(model_path)
+from chat_model import ChatModel
 
-input_text = "你好，DeepSeek模型"
+chat_model = ChatModel()
+app = FastAPI()
 
-# 编码输入文本
-input_ids = tokenizer.encode(input_text, return_tensors="pt")
 
-# 生成文本
-output = model.generate(
-    input_ids,
-    max_length=100,
-    temperature=0.7,
-    top_k=50,
-    top_p=0.9,
-    do_sample=True,
-    num_return_sequences=2  # 生成 2 个不同的结果
-)
+class Prompt(BaseModel):
+    text: str
 
-# 解码并打印生成的文本
-for i, sequence in enumerate(output):
-    print(
-        f"Generated text {i+1}: {tokenizer.decode(sequence, skip_special_tokens=True)}")
+
+async def sse(prompt, max_length: int = 100):
+    next_token_func = await chat_model.start_chat(prompt, max_length)
+    count = 0
+    while True:
+        text = await next_token_func()
+        if text is None:
+            break
+        yield f"event: next\ndata: {text} \n\n"
+        if count >= max_length:
+            break
+        count += 1
+
+
+@app.post("/")
+async def root(prompt: Prompt):
+    return StreamingResponse(sse(prompt.text), media_type="text/event-stream")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0")
