@@ -1,0 +1,5 @@
+Dockerfile
+model
+models/
+model/*
+__pypackages__/

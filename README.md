@@ -20,3 +20,9 @@ docker run --gpus "device=0" <image name>
 ```bash
 ln -s /media/administrator/hdd/Workspace/Models/deepseek-model-8b ./model
 ```
+
+## 使用Docker運行
+
+```bash
+
+```
