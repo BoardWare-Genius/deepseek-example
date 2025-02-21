@@ -1,16 +1,29 @@
 import asyncio
 
 import torch
+from fastapi.responses import StreamingResponse
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 class ChatModel:
 
-    def __init__(self, model_path: str = "./models/deepseek-model-8b"):
+    def __init__(self, model_path: str = "/media/"):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path).to(self.device)
+
+    async def sse(self, prompt, max_length: int = 100):
+        next_token_func = await self.start_chat(prompt, max_length)
+        count = 0
+        while True:
+            text = await next_token_func()
+            if text is None:
+                break
+            yield f"event: next\ndata: {text} \n\n"
+            if count >= max_length:
+                break
+            count += 1
 
     async def start_chat(self, prompt, max_length: int):
         inputs = self.tokenizer(prompt, return_tensors="pt").to(

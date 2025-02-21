@@ -1,3 +1,7 @@
+## 需求
+需要先安裝nvidia顯卡驅動
+
+## python venv
 先創建一個venv環境
 ```base
 python3 -m venv-deepseek
@@ -20,18 +24,19 @@ kubectl create namespace cattle-system
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.16/cert-manager.crds.yaml
 
-helm install cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace
 
 helm repo add jetstack https://charts.jetstack.io
 
 helm repo update
 
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace --kubeconfig /etc/rancher/k3s/k3s.yaml
+
 helm install rancher rancher-latest/rancher \
   --namespace cattle-system \
   --set hostname=rancher.k3s.bw \
   --set replicas=1 \
-  --set bootstrapPassword=<change me>
+  --set bootstrapPassword=<change me> \
   --kubeconfig /etc/rancher/k3s/k3s.yaml 
 ```
