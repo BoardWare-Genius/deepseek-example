@@ -176,3 +176,5 @@ cython_debug/
 deepseek-model-8b
 models/
 .DS_Store
+model
+model/*
