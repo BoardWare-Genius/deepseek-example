@@ -4,7 +4,7 @@ WORKDIR /app
 
 # ---- Dependencies ----
 FROM base AS dependencies  
-COPY gunicorn_app/requirements.txt ./
+COPY /app/requirements.txt ./
 # install app dependencies
 RUN pip install -r requirements.txt
 
