@@ -4,7 +4,7 @@ WORKDIR /app
 
 # ---- Dependencies ----
 FROM base AS dependencies  
-COPY /app/requirements.txt ./
+COPY ./requirements.txt ./
 # install app dependencies
 RUN pip install -r requirements.txt
 
