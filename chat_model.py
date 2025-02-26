@@ -9,6 +9,8 @@ class ChatModel:
 
     def __init__(self, model_path: str = "./model"):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        # TODO: remove
+        self.device = "cpu"
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path).to(self.device)
