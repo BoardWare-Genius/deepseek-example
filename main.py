@@ -21,7 +21,20 @@ async def sse(prompt, max_length: int = 100):
         text = await next_token_func()
         if text is None:
             break
-        yield f"event: next\ndata: {text} \n\n"
+        yield f"data: {text}\n\n"
+        if count >= max_length:
+            break
+        count += 1
+
+
+def sync_sse(prompt, max_length: int = 100):
+    next_token_func = chat_model.sync_start_chat(prompt, max_length)
+    count = 0
+    while True:
+        text = next_token_func()
+        if text is None:
+            break
+        yield f"data: {text}\n\n"
         if count >= max_length:
             break
         count += 1
@@ -31,5 +44,10 @@ async def sse(prompt, max_length: int = 100):
 async def root(prompt: Prompt):
     return StreamingResponse(sse(prompt.text), media_type="text/event-stream")
 
+
+@app.post("/sync")
+async def root(prompt: Prompt):
+    return StreamingResponse(sync_sse(prompt.text), media_type="text/event-stream")
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=9999)
