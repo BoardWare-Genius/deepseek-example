@@ -2,11 +2,8 @@ FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu24.04
 
 # 安裝 Python 和 pip
 # Install Python
-RUN apt-get update && \
-  apt-get install -y python3-pip python3-dev && \
-  apt-get install pip3 && \
-  rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update
+RUN apt-get install -y python3-pip python3-dev pip3
 
 # 設置工作目錄
 WORKDIR /app
