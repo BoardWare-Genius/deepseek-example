@@ -1,10 +1,11 @@
-FROM nvidia/cuda:12.8.0-base-oraclelinux8
+FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu24.04
 
 # 安裝 Python 和 pip
-RUN apt-get update && apt-get install -y \
-  python3 \
-  python3-pip \
-  && rm -rf /var/lib/apt/lists/*
+# Install Python
+RUN apt-get update && \
+  apt-get install -y python3-pip python3-dev && \
+  rm -rf /var/lib/apt/lists/*
+
 
 # 設置工作目錄
 WORKDIR /app
