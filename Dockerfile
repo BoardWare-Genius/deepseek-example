@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8-base
+FROM nvidia/cuda
 
 # 安裝 Python 和 pip
 RUN apt-get update && apt-get install -y \
