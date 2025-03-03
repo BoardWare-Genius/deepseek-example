@@ -19,4 +19,4 @@ ENV PYTHONUNBUFFERED=1
 
 # 設置默認命令
 EXPOSE 9999
-CMD ["python3", "app.py"]
+CMD ["python3", "main.py"]
