@@ -11,9 +11,8 @@ WORKDIR /app
 # 複製項目文件
 COPY . /app
 
-RUN pip3 --version
-# 安裝 Python 依賴
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir --upgrade pip
+RUN pip3 install --no-cache-dir -r  requirements.txt
 
 # 設置環境變量
 ENV PYTHONUNBUFFERED=1
