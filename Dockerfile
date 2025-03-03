@@ -4,7 +4,7 @@ FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu24.04
 # Install Python
 RUN apt-get update
 RUN apt-get install -y python3-pip python3-venv
-RUN pythonm -m venv /opt/venv
+RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 COPY ./requirements.txt /app/requirements.txt
 RUN pip install -Ur requirements.txt
