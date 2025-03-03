@@ -1,4 +1,4 @@
-FROM nvidia/cuda
+FROM nvidia/cuda:12.8.0-base-oraclelinux8
 
 # 安裝 Python 和 pip
 RUN apt-get update && apt-get install -y \
