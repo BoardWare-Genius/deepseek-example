@@ -5,7 +5,7 @@ from openai import OpenAI
 from pydantic import BaseModel
 
 from chat_model import ChatModel
-
+print(f"version:{torch.__version__}, cuda:{torch.cuda.is_available()}")
 chat_model = ChatModel()
 app = FastAPI()
 
