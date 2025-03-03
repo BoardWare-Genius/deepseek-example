@@ -3,7 +3,7 @@ FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu24.04
 # 安裝 Python 和 pip
 # Install Python
 RUN apt-get update && \
-  apt-get install -y python3-pip python3-dev && \
+  apt-get install -y python3-pip python3-dev python-is-python3 && \
   rm -rf /var/lib/apt/lists/*
 
 
