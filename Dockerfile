@@ -1,21 +1,23 @@
-FROM python:3.12.2 as builder
+FROM nvidia/cuda:11.8-base
 
+# 安裝 Python 和 pip
+RUN apt-get update && apt-get install -y \
+  python3 \
+  python3-pip \
+  && rm -rf /var/lib/apt/lists/*
+
+# 設置工作目錄
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user -r requirements.txt
 
-# 第二阶段：最终镜像
-FROM python:3.12.2-slim
+# 複製項目文件
+COPY . /app
 
-WORKDIR /app
-COPY --from=builder /root/.local /root/.local
-COPY . .
+# 安裝 Python 依賴
+RUN pip3 install -r requirements.txt
 
-ENV PATH=/root/.local/bin:$PATH
+# 設置環境變量
+ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && \
-  apt-get install -y --no-install-recommends some-package && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /root/.cache/pip
+# 設置默認命令
 EXPOSE 9999
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
