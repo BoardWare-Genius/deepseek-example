@@ -14,7 +14,7 @@ WORKDIR /app
 COPY . /app
 
 # 安裝 Python 依賴
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # 設置環境變量
 ENV PYTHONUNBUFFERED=1
