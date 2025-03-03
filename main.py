@@ -1,4 +1,5 @@
 import uvicorn
+import torch
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from openai import OpenAI
