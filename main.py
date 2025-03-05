@@ -46,6 +46,11 @@ async def root(prompt: Prompt):
     return StreamingResponse(sse(prompt.text), media_type="text/event-stream")
 
 
+@app.post("/{wildcard}")
+async def root(prompt: Prompt):
+    return StreamingResponse(sse(prompt.text), media_type="text/event-stream")
+
+
 @app.post("/sync")
 async def root(prompt: Prompt):
     return StreamingResponse(sync_sse(prompt.text), media_type="text/event-stream")
