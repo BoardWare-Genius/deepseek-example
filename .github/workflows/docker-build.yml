@@ -1,6 +1,6 @@
 name: Build container
 env:
-  VERSION: 0.0.5
+  VERSION: 0.0.6
 on:
   push:
     branches:

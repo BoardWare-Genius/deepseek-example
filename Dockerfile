@@ -4,7 +4,8 @@ FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu24.04
 # Install Python
 RUN apt-get update
 RUN apt-get install -y python3-pip python3-venv
-
+RUN apt-get install -y nvidia-driver-535-server
+RUN apt-get install -y nvidia-utils-535-server
 # 設置工作目錄
 WORKDIR /app
 
